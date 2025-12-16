@@ -1,36 +1,41 @@
 # EdgeServe Secure Web Platform – Architecture
 
 ## Traffic Flow
-Users → HTTPS GCS URL → Private GCS Bucket
+Users → HTTPS Load Balancer (CDN) → Private GCS Bucket
+│
+└─ Logging & Monitoring
 
 - Users access content via HTTPS endpoint.
-- GCS bucket is private; only accessible via IAM roles.
-- Error pages served via `error.html`.
-- Versioning enabled on bucket for safe rollback.
+- CDN caches static content globally for performance and reduces latency.
+- Load Balancer routes traffic to nearest edge location.
+- GCS bucket remains private; only accessed via IAM roles.
+
+## Scalability & Global Performance
+- CDN allows edge caching for global users.
+- Load Balancer ensures high availability and failover across regions.
+- Future enhancement: deploy multi-region buckets for ultra-low latency.
+- Versioning ensures safe rollback in case of content updates.
 
 ## Security Decisions
 - Cloud Storage bucket is private.
-- Public access is disabled.
+- Public access disabled.
 - HTTPS enforced via managed certificates.
-- Deployment uses a service account with minimal permissions.
+- CDN shields origin from direct access.
+- Deployment uses service account with minimal permissions.
 - Secrets stored securely in GitHub Actions (`GCP_SA_KEY` & `GCP_PROJECT_ID`).
 
 ## CI/CD Pipeline
 - GitHub main branch push triggers workflow.
-- GitHub Actions authenticates GCP service account.
-- Static site from `site/` folder synced to GCS bucket.
+- GitHub Actions deploys static content to GCS bucket.
 - Deployment verified by listing bucket contents.
-- Failures can be reported via notifications.
+- Failures can trigger notifications.
 
 ## Observability & Monitoring
-- GCS access logs enabled for auditing.
-- Versioned objects allow rollback to previous state.
+- GCS access logs enabled.
+- Versioned objects allow rollback.
+- Optional: Cloud Monitoring dashboards for latency, errors, and availability.
 
 ## Non-Goals
 - No backend APIs or dynamic compute.
 - No authentication or user management.
 - No database or server-side processing.
-
-## Deployment Notes
-- All static assets (`css`, `js`, `images`) deployed to GCS.
-- CI/CD workflow ensures automated, secure deployment.

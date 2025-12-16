@@ -11,6 +11,8 @@
 
 ## Architecture Overview
 Users → HTTPS GCS URL → Private GCS Bucket
+│
+└─ Logging & Monitoring
 
 - Users access content via HTTPS endpoint.
 - GCS bucket is private; only accessible via IAM roles.
@@ -25,22 +27,28 @@ Users → HTTPS GCS URL → Private GCS Bucket
 - Deployment uses a service account with minimal permissions.
 - Secrets stored securely in GitHub Actions (`GCP_SA_KEY` & `GCP_PROJECT_ID`).
 
-## Deployment / CI-CD
+## CI/CD Deployment
 - GitHub Actions workflow deploys `site/` folder to GCS.
 - Automatic sync triggered on push to `main` branch.
 - Deployment verified by listing bucket contents.
 - Optional: notifications on failure.
 
+## Global Scalability & CDN
+- Platform is ready for integration with Cloud CDN and HTTPS Load Balancer.
+- CDN caches static content at edge locations to reduce latency worldwide.
+- Load Balancer ensures high availability and failover.
+- GCS bucket remains private; content served securely.
+
 ## Operational Observability
 - GCS access logs enabled for auditing.
 - Versioned objects allow rollback to previous state.
-- Optional: Cloud Monitoring dashboards for metrics.
+- Optional: Cloud Monitoring dashboards for latency/error tracking.
 
 ## Quick Demo
 ![EdgeServe Demo](site/assets/images/demo.png)
 URL: `https://storage.googleapis.com/edge-serve-secure-web-prod/index.html`
 
 ## Next Steps / Enhancements
-- Integrate Cloud CDN or Load Balancer for global performance.
-- Add Cloud Monitoring dashboards for latency/error tracking.
-- Configure automated notifications for deployment status.
+- Enable Cloud CDN with HTTPS.
+- Add Monitoring Dashboards (Cloud Monitoring or Grafana).
+- Optional: Add a custom domain with HTTPS.

@@ -37,6 +37,7 @@ Users → HTTPS GCS URL → Private GCS Bucket
 - Optional: Cloud Monitoring dashboards for metrics.
 
 ## Quick Demo
+![EdgeServe Demo](site/assets/images/demo.png)
 URL: `https://storage.googleapis.com/edge-serve-secure-web-prod/index.html`
 
 ## Next Steps / Enhancements

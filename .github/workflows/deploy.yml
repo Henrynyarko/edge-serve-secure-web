@@ -13,10 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Authenticate to GCP using the secret JSON
+      # 2️⃣ Authenticate to GCP using the base64-encoded secret
       - name: Authenticate to GCP
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" > $HOME/gcloud-key.json
+          echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > $HOME/gcloud-key.json
           gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 

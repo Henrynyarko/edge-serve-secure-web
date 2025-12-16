@@ -10,20 +10,24 @@ jobs:
 
     steps:
       # 1️⃣ Checkout the repo
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Authenticate to GCP using service account JSON secret
+      # 2️⃣ Authenticate to GCP using the service account JSON secret
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # 3️⃣ Set the project explicitly
+      # 3️⃣ Set the correct GCP project
       - name: Set GCP project
         run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
-      # 4️⃣ Deploy the site
+      # 4️⃣ Deploy the site to GCS
       - name: Deploy to GCS
         run: |
           gsutil -m rsync -r site gs://edge-serve-secure-web-prod
+
+      # 5️⃣ Optional: List bucket contents to verify deployment
+      - name: Verify deployment
+        run: gsutil ls -R gs://edge-serve-secure-web-prod
